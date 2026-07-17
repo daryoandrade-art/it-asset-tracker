@@ -24,7 +24,7 @@ Nasceu da experiência real com gestão de ativos, atribuição por filial e man
 |---|---|
 | `Site` | Filial/local físico onde os ativos ficam alocados |
 | `Asset` | Ativo de TI (notebook, desktop, impressora, equipamento de rede, PDV etc.) |
-| `AssetAssignment` | Histórico de atribuição de um ativo a um site/responsável |
+| `HistoryAsset` | Histórico de atribuição de um ativo a um site/responsável |
 | `MaintenanceRecord` | Registro de manutenção preventiva/corretiva de um ativo |
 
 ### Regras de negócio principais
