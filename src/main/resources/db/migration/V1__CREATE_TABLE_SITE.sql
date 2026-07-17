@@ -3,6 +3,7 @@ CREATE TABLE site (
     nome VARCHAR(150) NOT NULL,
     status_contract VARCHAR(150) DEFAULT 'ACTIVE' CHECK(status_contract IN ('ACTIVE', 'INACTIVE')),
     domain VARCHAR(150)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE site_user (
@@ -12,4 +13,5 @@ CREATE TABLE site_user (
     email VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(150),
     site_id INTEGER REFERENCES site(id) ON DELETE CASCADE
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
