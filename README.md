@@ -74,8 +74,8 @@ As migrations do Flyway rodam automaticamente na subida da aplicação.
 
 ## Status do projeto
 
+- [x] Migrations Flyway iniciais
 - [ ] Modelagem inicial (`Site`, `Asset`)
-- [ ] Migrations Flyway iniciais
 - [ ] CRUD de `Site`
 - [ ] CRUD de `Asset`
 - [ ] `AssetAssignment` com regra de fechamento automático da atribuição anterior
