@@ -5,8 +5,8 @@ CREATE TABLE asset (
     status VARCHAR(20) NOT NULL DEFAULT 'IN_STOCK'
         CHECK (status IN ('IN_TRANSIT','CONFIGURING','IN_STOCK','IN_USE','RESERVED','UNDER_REPAIR','IN_WARRANTY',     'STOLEN_LOST','DISPOSED')),
     image_url VARCHAR(500),
-    site_id INTEGER REFERENCES site(id),
-    user_id INTEGER REFERENCES site_user(id),
+    site_id INTEGER REFERENCES site(id) ON DELETE RESTRICT,
+    user_id INTEGER REFERENCES site_user(id) ON DELETE RESTRICT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT chk_status_user CHECK (
