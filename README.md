@@ -76,11 +76,11 @@ As migrations do Flyway rodam automaticamente na subida da aplicação.
 
 - [x] Migrations Flyway iniciais
 - [x] Modelagem inicial (`Site`, `Asset`)
+- [ ] SISTEMA DE AUTENTICACAO JWT
 - [ ] CRUD de `Site`
 - [ ] CRUD de `Asset`
 - [ ] `AssetAssignment` com regra de fechamento automático da atribuição anterior
 - [ ] `MaintenanceRecord` com atualização automática de status do ativo
-- [ ] Autenticação JWT
 - [ ] Autorização por ownership nos endpoints de escrita
 - [ ] Painel Thymeleaf (somente leitura): lista de ativos, alertas de manutenção prolongada
 - [ ] Testes automatizados
