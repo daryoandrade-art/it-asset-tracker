@@ -48,7 +48,7 @@ public class MaintenanceRecord {
     private MaintenanceStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_admin_id", nullable = false)
+    @JoinColumn(name = "created_by_admin_id")
     private AdminUser adminUser;
 
     @Column(name = "performed_at")
