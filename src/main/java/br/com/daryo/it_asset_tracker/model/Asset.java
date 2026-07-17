@@ -45,4 +45,9 @@ public class Asset {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private SiteUser user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updated_by_admin_id")
+    private AdminUser updatedBy;
+
 }
