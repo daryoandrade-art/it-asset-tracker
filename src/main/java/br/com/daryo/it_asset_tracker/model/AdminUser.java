@@ -26,7 +26,7 @@ public class AdminUser {
     private Integer id;
 
     @Column(nullable = false)
-    private String nome;
+    private String name;
 
     @Column(nullable = false, unique = true)
     private String phone;
