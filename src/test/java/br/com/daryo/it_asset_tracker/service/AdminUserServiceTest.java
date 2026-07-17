@@ -45,8 +45,7 @@ class AdminUserServiceTest {
 
     @Test
     void shouldRegisterSuccessfully() {
-        RegisterRequest request = new RegisterRequest("Admin", "11999999999", "admin@test.com", "123456");
-
+		RegisterRequest request = new RegisterRequest("Admin", "admin@test.com", "11999999999", "123456");
         when(adminUserRepository.findByEmail("admin@test.com")).thenReturn(Optional.empty());
         when(adminUserRepository.save(any(AdminUser.class))).thenAnswer(invocation -> {
             AdminUser saved = invocation.getArgument(0);
@@ -63,19 +62,20 @@ class AdminUserServiceTest {
         assertEquals(3600L, response.expiresIn());
         verify(adminUserRepository).save(any(AdminUser.class));
     }
-
     @Test
     void shouldThrowWhenEmailAlreadyExists() {
-        RegisterRequest request = new RegisterRequest("Admin", "11999999999", "admin@test.com", "123456");
+        RegisterRequest request = new RegisterRequest("Admin", "admin@test.com", "11999999999", "123456");
+        //                                                       ^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^
+        //                                                       email primeiro,  telefone depois
 
         when(adminUserRepository.findByEmail("admin@test.com")).thenReturn(Optional.of(new AdminUser()));
 
         assertThrows(DuplicateResourceException.class, () -> {
             adminUserService.register(request);
-        });
+    });
 
-        verify(adminUserRepository, never()).save(any());
-    }
+    verify(adminUserRepository, never()).save(any());
+}
 
     @Test
     void shouldLoginSuccessfully() {
@@ -109,7 +109,7 @@ class AdminUserServiceTest {
 
     @Test
     void shouldThrowWhenPasswordIsWrong() {
-        LoginRequest request = new LoginRequest("admin@test.com", "senha-errada");
+        LoginRequest request = new LoginRequest("admin@test.com", "incorrect-password");
 
         AdminUser admin = new AdminUser();
         admin.setId(1);
