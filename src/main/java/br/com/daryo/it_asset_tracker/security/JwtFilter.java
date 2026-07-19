@@ -48,7 +48,12 @@ public class JwtFilter implements Filter {
 
     private void sendUnauthorized(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType("application/json");
-        response.getWriter().write("{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"" + message + "\"}");
+        response.setContentType("application/problem+json");
+        response.getWriter().write(
+            "{\"type\":\"https://api.it-asset-tracker/errors/unauthorized\"," +
+            "\"title\":\"Unauthorized\"," +
+            "\"status\":401," +
+            "\"detail\":\"" + message + "\"}"
+        );
     }
 }
