@@ -29,6 +29,24 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ProblemDetail handleResourceNotFound(ResourceNotFoundException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND, ex.getMessage());
+        problem.setTitle("Resource not found");
+        problem.setType(URI.create("https://api.it-asset-tracker/errors/resource-not-found"));
+        return problem;
+    }
+
+    @ExceptionHandler(InvalidArgumentException.class)
+    public ProblemDetail handleInvalidArgument(InvalidArgumentException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND, ex.getMessage());
+        problem.setTitle("Invalid argument");
+        problem.setType(URI.create("https://api.it-asset-tracker/errors/invalid-argument"));
+        return problem;
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidation(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldErrors().stream()

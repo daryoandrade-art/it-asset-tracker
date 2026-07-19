@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import br.com.daryo.it_asset_tracker.dto.site.SiteRequestDto;
 import br.com.daryo.it_asset_tracker.dto.site.SiteResponseDto;
+import br.com.daryo.it_asset_tracker.exception.InvalidArgumentException;
+import br.com.daryo.it_asset_tracker.exception.ResourceNotFoundException;
 import br.com.daryo.it_asset_tracker.model.Site;
 import br.com.daryo.it_asset_tracker.model.enums.SiteEnum;
 import br.com.daryo.it_asset_tracker.repository.SiteRepository;
@@ -14,12 +16,10 @@ import br.com.daryo.it_asset_tracker.repository.SiteRepository;
 @Service
 public class SiteService {
 
-    private final SiteResponseDto siteResponseDto;
     private final SiteRepository siteRepository;
 
     public SiteService(SiteRepository siteRepository, SiteResponseDto siteResponseDto){
         this.siteRepository = siteRepository;
-        this.siteResponseDto = siteResponseDto;
     }
 
 
@@ -39,11 +39,17 @@ public class SiteService {
     }
 
     public SiteResponseDto findById(Integer id){
+        if (siteRepository.searchById(id) == null){
+            throw new ResourceNotFoundException("site not found");
+        }
         return SiteResponseDto.fromEntity(siteRepository.searchById(id));
     }
 
     public SiteResponseDto inactive(SiteRequestDto dto){
         Site site = dto.toEntity();
+        if (site.getStatusContract() == SiteEnum.INACTIVE){
+            throw new InvalidArgumentException("It is already inactive.");
+        }
         site.setStatusContract(SiteEnum.INACTIVE);
         siteRepository.save(site);
         return SiteResponseDto.fromEntity(site);
@@ -51,6 +57,9 @@ public class SiteService {
 
     public SiteResponseDto update(Integer id, SiteRequestDto dto){
         Site site = siteRepository.searchById(id);
+        if(site == null){
+            throw new ResourceNotFoundException("site not found");
+        }
         site.setName(dto.name());
         site.setDomain(dto.domain());
         siteRepository.save(site);
