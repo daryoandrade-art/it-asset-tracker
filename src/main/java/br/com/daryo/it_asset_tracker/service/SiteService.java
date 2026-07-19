@@ -18,7 +18,7 @@ public class SiteService {
 
     private final SiteRepository siteRepository;
 
-    public SiteService(SiteRepository siteRepository, SiteResponseDto siteResponseDto){
+    public SiteService(SiteRepository siteRepository){
         this.siteRepository = siteRepository;
     }
 
@@ -39,10 +39,11 @@ public class SiteService {
     }
 
     public SiteResponseDto findById(Integer id){
-        if (siteRepository.searchById(id) == null){
+        Site site = siteRepository.searchById(id);
+        if (site == null){
             throw new ResourceNotFoundException("site not found");
         }
-        return SiteResponseDto.fromEntity(siteRepository.searchById(id));
+        return SiteResponseDto.fromEntity(site);
     }
 
     public SiteResponseDto inactive(SiteRequestDto dto){
