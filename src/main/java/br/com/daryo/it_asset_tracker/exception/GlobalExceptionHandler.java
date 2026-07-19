@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidArgumentException.class)
     public ProblemDetail handleInvalidArgument(InvalidArgumentException ex) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.NOT_FOUND, ex.getMessage());
+                HttpStatus.BAD_REQUEST, ex.getMessage());
         problem.setTitle("Invalid argument");
         problem.setType(URI.create("https://api.it-asset-tracker/errors/invalid-argument"));
         return problem;

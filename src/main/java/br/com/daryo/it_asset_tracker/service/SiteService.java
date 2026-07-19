@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.daryo.it_asset_tracker.dto.site.SiteRequestDto;
 import br.com.daryo.it_asset_tracker.dto.site.SiteResponseDto;
-import br.com.daryo.it_asset_tracker.exception.InvalidArgumentException;
 import br.com.daryo.it_asset_tracker.exception.ResourceNotFoundException;
 import br.com.daryo.it_asset_tracker.model.Site;
 import br.com.daryo.it_asset_tracker.model.enums.SiteEnum;
@@ -46,10 +45,10 @@ public class SiteService {
         return SiteResponseDto.fromEntity(site);
     }
 
-    public SiteResponseDto inactive(SiteRequestDto dto){
-        Site site = dto.toEntity();
-        if (site.getStatusContract() == SiteEnum.INACTIVE){
-            throw new InvalidArgumentException("It is already inactive.");
+    public SiteResponseDto inactive(Integer id){
+        Site site = siteRepository.searchById(id);
+        if(site == null){
+            throw new ResourceNotFoundException("site not found");
         }
         site.setStatusContract(SiteEnum.INACTIVE);
         siteRepository.save(site);
