@@ -9,10 +9,12 @@ import br.com.daryo.it_asset_tracker.dto.site_user.SiteUserRequestDto;
 import br.com.daryo.it_asset_tracker.dto.site_user.SiteUserResponseDto;
 import br.com.daryo.it_asset_tracker.exception.DuplicateResourceException;
 import br.com.daryo.it_asset_tracker.exception.InvalidArgumentException;
+import br.com.daryo.it_asset_tracker.exception.ResourceInUseException;
 import br.com.daryo.it_asset_tracker.exception.ResourceNotFoundException;
 import br.com.daryo.it_asset_tracker.model.Site;
 import br.com.daryo.it_asset_tracker.model.SiteUser;
 import br.com.daryo.it_asset_tracker.model.enums.SiteEnum;
+import br.com.daryo.it_asset_tracker.repository.AssetRepository;
 import br.com.daryo.it_asset_tracker.repository.SiteRepository;
 import br.com.daryo.it_asset_tracker.repository.SiteUserRepository;
 
@@ -20,10 +22,12 @@ import br.com.daryo.it_asset_tracker.repository.SiteUserRepository;
 public class SiteUserService {
     private final SiteUserRepository siteUserRepository;
     private final SiteRepository siteRepository;
+    private final AssetRepository assetRepository;
 
-    public SiteUserService(SiteUserRepository siteUserRepository, SiteRepository siteRepository){
+    public SiteUserService(SiteUserRepository siteUserRepository, SiteRepository siteRepository, AssetRepository assetRepository){
         this.siteUserRepository = siteUserRepository;
         this.siteRepository = siteRepository;
+        this.assetRepository = assetRepository;
     }
 
     public SiteUserResponseDto create(SiteUserRequestDto dto){
@@ -65,15 +69,34 @@ public class SiteUserService {
 
     public void delete(Integer id){
         SiteUser siteUser = siteUserRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("user not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        if (!assetRepository.findByUser(siteUser).isEmpty()){
+            throw new ResourceInUseException("user has linked assets");
+        }
         siteUserRepository.delete(siteUser);
     }
+
     public SiteUserResponseDto update(Integer id, SiteUserRequestDto dto){
         Site site = siteRepository.findById(dto.siteId())
                 .orElseThrow(() -> new ResourceNotFoundException("site not found"));
         SiteUser siteUser = siteUserRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found"));
 
+        boolean isMovingToAnotherSite = !siteUser.getSite().getId().equals(dto.siteId());
+        if (isMovingToAnotherSite && !assetRepository.findByUser(siteUser).isEmpty()){
+            throw new ResourceInUseException("user has linked assets");
+        }
+
+        siteUserRepository.findByEmail(dto.email())
+                .filter(existing -> !existing.getId().equals(id))
+                .ifPresent(existing -> {
+                    throw new DuplicateResourceException("email must be unique");
+                });
+        siteUserRepository.findByPhone(dto.phone())
+                .filter(existing -> !existing.getId().equals(id))
+                .ifPresent(existing -> {
+                    throw new DuplicateResourceException("phone must be unique");
+                });
         if (site.getStatusContract() != SiteEnum.ACTIVE){
             throw new InvalidArgumentException("users is only permitted for active sites");
         }

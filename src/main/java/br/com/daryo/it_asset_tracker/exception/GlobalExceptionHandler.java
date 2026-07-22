@@ -60,6 +60,15 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(ResourceInUseException.class)
+    public ProblemDetail handleDataIntegrity(ResourceInUseException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT, "Operação viola integridade referencial ou de unicidade.");
+        problem.setTitle("Data integrity violation");
+        problem.setType(URI.create("https://api.it-asset-tracker/errors/data-integrity"));
+        return problem;
+    }
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGeneric(Exception ex) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(

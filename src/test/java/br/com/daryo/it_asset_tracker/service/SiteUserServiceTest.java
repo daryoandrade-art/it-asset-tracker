@@ -23,6 +23,7 @@ import br.com.daryo.it_asset_tracker.exception.ResourceNotFoundException;
 import br.com.daryo.it_asset_tracker.model.Site;
 import br.com.daryo.it_asset_tracker.model.SiteUser;
 import br.com.daryo.it_asset_tracker.model.enums.SiteEnum;
+import br.com.daryo.it_asset_tracker.repository.AssetRepository;
 import br.com.daryo.it_asset_tracker.repository.SiteRepository;
 import br.com.daryo.it_asset_tracker.repository.SiteUserRepository;
 
@@ -33,12 +34,14 @@ class SiteUserServiceTest {
     private SiteUserRepository siteUserRepository;
     @Mock
     private SiteRepository siteRepository;
+    @Mock
+    private AssetRepository assetRepository;
 
     private SiteUserService siteUserService;
 
     @BeforeEach
     void setUp() {
-        siteUserService = new SiteUserService(siteUserRepository, siteRepository);
+        siteUserService = new SiteUserService(siteUserRepository, siteRepository, assetRepository);
     }
     //Create
     @Test
