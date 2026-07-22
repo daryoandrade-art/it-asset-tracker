@@ -1,1 +1,0 @@
-ALTER TABLE site ALTER COLUMN status_contract SET NOT NULL;

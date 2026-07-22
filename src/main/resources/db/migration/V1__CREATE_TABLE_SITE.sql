@@ -1,7 +1,8 @@
 CREATE TABLE site (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
-    status_contract VARCHAR(150) DEFAULT 'ACTIVE' CHECK(status_contract IN ('ACTIVE', 'INACTIVE')),
+    status_contract VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'
+        CHECK (status_contract IN ('ACTIVE', 'INACTIVE')),
     domain VARCHAR(150),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -14,3 +15,5 @@ CREATE TABLE site_user (
     site_id INTEGER REFERENCES site(id) ON DELETE CASCADE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX idx_site_user_site_id ON site_user(site_id);
