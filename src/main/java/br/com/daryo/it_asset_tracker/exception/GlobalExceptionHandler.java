@@ -66,6 +66,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
         problem.setTitle("Internal server error");
         problem.setType(URI.create("https://api.it-asset-tracker/errors/internal"));
+        ex.printStackTrace();
         return problem;
     }
 }
