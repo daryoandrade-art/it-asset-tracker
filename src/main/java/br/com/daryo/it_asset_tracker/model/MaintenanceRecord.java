@@ -33,7 +33,7 @@ public class MaintenanceRecord {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asset_id", nullable = false)
+    @JoinColumn(name = "asset_id")
     private Asset asset;
 
     @Column(name = "maintenance_type", nullable = false)
@@ -57,4 +57,7 @@ public class MaintenanceRecord {
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "asset_serial_number", nullable = false)
+    private String assetSerialNumber;
 }

@@ -30,7 +30,7 @@ public class HistoryAsset {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asset_id", nullable = false)
+    @JoinColumn(name = "asset_id")
     private Asset asset;
 
     @Enumerated(EnumType.STRING)
@@ -61,7 +61,10 @@ public class HistoryAsset {
     private LocalDateTime movedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id", nullable = false)
+    @JoinColumn(name = "admin_id")
     private AdminUser admin;
+
+    @Column(name = "asset_serial_number", nullable = false)
+    private String assetSerialNumber;
 
 }
