@@ -10,16 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(Exception.class)
-    public ProblemDetail handleGeneric(Exception ex) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
-        problem.setTitle("Internal server error");
-        problem.setType(URI.create("https://api.it-asset-tracker/errors/internal"));
-        return problem;
-    }
-
     @ExceptionHandler(InvalidCredentialsException.class)
     public ProblemDetail handleInvalidCredentials(InvalidCredentialsException ex) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
@@ -67,6 +57,15 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST, message);
         problem.setTitle("Validation error");
         problem.setType(URI.create("https://api.it-asset-tracker/errors/validation"));
+        return problem;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ProblemDetail handleGeneric(Exception ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
+        problem.setTitle("Internal server error");
+        problem.setType(URI.create("https://api.it-asset-tracker/errors/internal"));
         return problem;
     }
 }
