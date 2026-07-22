@@ -27,17 +27,16 @@ public class SiteUserService {
     }
 
     public SiteUserResponseDto create(SiteUserRequestDto dto){
-        Site site = siteRepository.searchById(dto.siteId());
-        if (site == null){
-            throw new InvalidArgumentException("site does not exist");
-        }
+        Site site = siteRepository.findById(dto.siteId())
+                .orElseThrow(() -> new InvalidArgumentException("site does not exist"));
+
         if (site.getStatusContract() != SiteEnum.ACTIVE){
             throw new InvalidArgumentException("site is inactive");
         }
-        if (siteUserRepository.searchByEmail(dto.email()) != null){
+        if (siteUserRepository.findByEmail(dto.email()).isPresent()){
             throw new DuplicateResourceException("email must be unique");
         }
-        if (siteUserRepository.searchByPhone(dto.phone()) != null){
+        if (siteUserRepository.findByPhone(dto.phone()).isPresent()){
             throw new DuplicateResourceException("phone must be unique");
         }
         SiteUser siteUser = dto.toEntity(site);
@@ -46,46 +45,35 @@ public class SiteUserService {
     }
 
     public List<SiteUserResponseDto> listBySite(Integer siteId){
-        Site site = siteRepository.searchById(siteId);
-                if (site == null){
-            throw new ResourceNotFoundException("site not found");
-        }
-        return siteUserRepository.findBySite(site)
-                        .stream()
-                        .map(SiteUserResponseDto::fromEntity)
-                        .collect(Collectors.toList());
+        Site site = siteRepository.findById(siteId)
+                .orElseThrow(() -> new ResourceNotFoundException("site not found"));
+        return siteUserRepository.findBySite(site).stream()
+                .map(SiteUserResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
     public List<SiteUserResponseDto> findAll(){
-        List<SiteUser> sites = siteUserRepository.findAll();
-        return sites.stream()
-                    .map(SiteUserResponseDto::fromEntity)
-                    .collect(Collectors.toList());
+        return siteUserRepository.findAll().stream()
+                .map(SiteUserResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public SiteUserResponseDto findById(Integer id){
-        SiteUser siteUser = siteUserRepository.searchById(id);
-        if (siteUser == null){
-            throw new ResourceNotFoundException("user not found");
-        }
+        SiteUser siteUser = siteUserRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found"));
         return SiteUserResponseDto.fromEntity(siteUser);
     }
 
     public void delete(Integer id){
-        SiteUser siteUser = siteUserRepository.searchById(id);
-        if (siteUser == null){
-            throw new ResourceNotFoundException("user not found");
-        }
+        SiteUser siteUser = siteUserRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found"));
         siteUserRepository.delete(siteUser);
     }
     public SiteUserResponseDto update(Integer id, SiteUserRequestDto dto){
-        Site site = siteRepository.searchById(dto.siteId());
-        if (site == null){
-            throw new ResourceNotFoundException("site not found");
-        }
-        SiteUser siteUser = siteUserRepository.searchById(id);
-        if(siteUser == null){
-            throw new ResourceNotFoundException("user not found");
-        }
+        Site site = siteRepository.findById(dto.siteId())
+                .orElseThrow(() -> new ResourceNotFoundException("site not found"));
+        SiteUser siteUser = siteUserRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found"));
+
         if (site.getStatusContract() != SiteEnum.ACTIVE){
             throw new InvalidArgumentException("users is only permitted for active sites");
         }

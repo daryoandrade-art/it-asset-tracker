@@ -39,18 +39,14 @@ public class SiteService {
     }
 
     public SiteResponseDto findById(Integer id){
-        Site site = siteRepository.searchById(id);
-        if (site == null){
-            throw new ResourceNotFoundException("site not found");
-        }
+        Site site = siteRepository.findById(id)
+                        .orElseThrow(()-> new ResourceNotFoundException("site not found"));
         return SiteResponseDto.fromEntity(site);
     }
 
     public SiteResponseDto inactive(Integer id){
-        Site site = siteRepository.searchById(id);
-        if(site == null){
-            throw new ResourceNotFoundException("site not found");
-        }
+        Site site = siteRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("site not found"));
         if(site.getStatusContract() == SiteEnum.INACTIVE){
             throw new InvalidArgumentException("It is already inactive.");
         }
@@ -60,10 +56,8 @@ public class SiteService {
     }
 
     public SiteResponseDto active(Integer id){
-        Site site = siteRepository.searchById(id);
-        if(site == null){
-            throw new ResourceNotFoundException("site not found");
-        }
+        Site site = siteRepository.findById(id)
+                        .orElseThrow(()-> new ResourceNotFoundException("site not found"));
         if(site.getStatusContract() == SiteEnum.ACTIVE){
             throw new InvalidArgumentException("It is already active.");
         }
@@ -73,10 +67,8 @@ public class SiteService {
     }
 
     public SiteResponseDto update(Integer id, SiteRequestDto dto){
-        Site site = siteRepository.searchById(id);
-        if(site == null){
-            throw new ResourceNotFoundException("site not found");
-        }
+        Site site = siteRepository.findById(id)
+                        .orElseThrow(()-> new ResourceNotFoundException("site not found"));
         site.setName(dto.name());
         site.setDomain(dto.domain());
         siteRepository.save(site);
