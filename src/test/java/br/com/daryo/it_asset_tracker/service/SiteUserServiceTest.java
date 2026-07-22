@@ -257,4 +257,103 @@ class SiteUserServiceTest {
         });
     }
 
+    @Test
+    void shouldUpdateSuccessfully(){
+        Site site = new Site();
+        site.setId(1);
+        site.setName("Filial Centro");
+        site.setStatusContract(SiteEnum.ACTIVE);
+
+        SiteUser user = new SiteUser();
+        user.setId(1);
+        user.setName("Daryo");
+        user.setEmail("daryodev@dev.com");
+        user.setPhone("8899999999");
+        user.setSite(site);
+
+        SiteUserRequestDto dto = new SiteUserRequestDto(
+            "Daryo Atualizado",
+            "8899998888",
+            "novo@dev.com",
+            1);
+
+        when(siteRepository.findById(1)).thenReturn(Optional.of(site));
+        when(siteUserRepository.findById(1)).thenReturn(Optional.of(user));
+        when(siteUserRepository.save(any(SiteUser.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        SiteUserResponseDto response = siteUserService.update(1, dto);
+
+        assertEquals("Daryo Atualizado", response.name());
+        assertEquals("8899998888", response.phone());
+        assertEquals("novo@dev.com", response.email());
+        assertEquals(1, response.site().id());
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingWithNonExistentSite(){
+        Site site = new Site();
+        site.setId(1);
+        site.setName("Filial Centro");
+        site.setStatusContract(SiteEnum.ACTIVE);
+
+        SiteUser user = new SiteUser();
+        user.setId(1);
+        user.setName("Daryo");
+        user.setEmail("daryodev@dev.com");
+        user.setPhone("8899999999");
+        user.setSite(site);
+
+        SiteUserRequestDto dto = new SiteUserRequestDto(
+            "Daryo Atualizado",
+            "8899998888",
+            "novo@dev.com",
+            99);
+
+        when(siteRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            siteUserService.update(1, dto);
+        });
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingNonExistentUser(){
+        Site site = new Site();
+        site.setId(1);
+        site.setName("Filial Centro");
+        site.setStatusContract(SiteEnum.ACTIVE);
+
+        SiteUserRequestDto dto = new SiteUserRequestDto("Daryo Atualizado", "8899998888", "novo@dev.com", 1);
+
+        when(siteRepository.findById(1)).thenReturn(Optional.of(site));
+        when(siteUserRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            siteUserService.update(99, dto);
+        });
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingWithInactiveSite(){
+        Site site = new Site();
+        site.setId(1);
+        site.setName("Filial Centro");
+        site.setStatusContract(SiteEnum.INACTIVE);
+
+        SiteUser user = new SiteUser();
+        user.setId(1);
+        user.setName("Daryo");
+        user.setEmail("daryodev@dev.com");
+        user.setPhone("8899999999");
+        user.setSite(site);
+
+        SiteUserRequestDto dto = new SiteUserRequestDto("Daryo Atualizado", "8899998888", "novo@dev.com", 1);
+
+        when(siteRepository.findById(1)).thenReturn(Optional.of(site));
+        when(siteUserRepository.findById(1)).thenReturn(Optional.of(user));
+
+        assertThrows(InvalidArgumentException.class, () -> {
+            siteUserService.update(1, dto);
+        });
+    }
 }
