@@ -31,7 +31,7 @@ public class Asset {
     @Column(name = "serial_number", unique = true, nullable = false)
     private String serialNumber;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private AssetEnum status;
 

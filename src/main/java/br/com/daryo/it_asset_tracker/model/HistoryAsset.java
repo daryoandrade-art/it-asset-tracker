@@ -2,6 +2,8 @@ package br.com.daryo.it_asset_tracker.model;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import br.com.daryo.it_asset_tracker.model.enums.AssetEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,7 +59,8 @@ public class HistoryAsset {
     @JoinColumn(name = "new_site_id")
     private Site newSite;
 
-    @Column(name = "moved_at")
+    @Column(name = "moved_at", nullable = false)
+    @CreationTimestamp
     private LocalDateTime movedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
